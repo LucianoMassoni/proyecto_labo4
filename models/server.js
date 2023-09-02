@@ -1,5 +1,5 @@
 const express = require('express'); 
-
+const cors = require('cors');
 
 
 class server{
@@ -9,14 +9,32 @@ class server{
         
         this.app = express();
 
+        // 1 en orden
+        this.middleware();
+
+        // 2 en orden
         this.routers();
+
+    }
+
+    middleware(){
+        //probar alguna regla de restrición
+        this.app.use(cors());
+
+        //Cuando se usa un .use asociarlo a un middleware. ej. cors
+        this.app.use(express.static('public'))
     }
 
     routers(){
-        this.app.get('/', function (req, res) {
+        this.app.get('/', (req, res) => {
             res.send('Hello World')
           });
+
+        this.app.use('/api/v1/demo', require('../routes/demo'));
+
     }
+
+    //cuando hay un middeleware 
 
     listen(){
         this.app.listen(this.port, () =>{
