@@ -31,6 +31,7 @@ class server{
           });
 
         this.app.use('/api/v1/demo', require('../routes/demo'));
+        this.app.use('/api/v1/demo', require('../routes/actores'));
 
     }
 
