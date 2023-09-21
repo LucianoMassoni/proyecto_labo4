@@ -31,7 +31,6 @@ class server{
           });
 
         this.app.use(require('../routes/rutas'));
-        this.app.use(require('../routes/actores'));
 
     }
 
