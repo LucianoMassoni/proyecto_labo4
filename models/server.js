@@ -30,8 +30,8 @@ class server{
             res.send('Hello World')
           });
 
-        this.app.use('/api/v1/demo', require('../routes/demo'));
-        this.app.use('/api/v1/demo', require('../routes/actores'));
+        this.app.use(require('../routes/rutas'));
+        this.app.use(require('../routes/actores'));
 
     }
 
