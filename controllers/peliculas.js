@@ -2,7 +2,7 @@ const { request, response } = require("express");
 const axios = require('axios');
 const apiKey = process.env.APIKEY; 
 
-
+/*
 const getPeliculas = (req = request, res = request) => {
   const pages = [1, 2, 3];
 
@@ -42,7 +42,35 @@ const getPeliculas = (req = request, res = request) => {
       });
     });
 };
+*/
 
+const getPeliculas = (req = request, res = request) => {
+  try {
+    const { page } = req.params;
+
+    axios.get(
+      `https://api.themoviedb.org/3/discover/movie`,
+      {
+        params: {
+          include_adult: false,
+          include_video: false,
+          language: 'en-US',
+          page: page,
+          sort_by: 'popularity.desc',
+          api_key: apiKey,
+        },
+      })
+        .then( ( { status, data } ) => {
+          res.status(status).json(data);
+        })
+  } catch (error) {
+    res.status(error.status).json({
+      error:error.status +" "+ error.statusText,
+      message:error.status_message
+    });
+  }
+
+}
 
 const getPelicula = (req = request, res = request) => {
     //cuando quiera pasar las cosas por url como peliculas?id=12 lo dejo solo y en el controller 
@@ -70,10 +98,6 @@ const getPelicula = (req = request, res = request) => {
         });
 }
 
-
-const getEstrenos = (req = request, res = request) => {
-    res.json({name:'Estrenos'});
-}
 
 
 const getGeneroId = (genero) => {
@@ -107,6 +131,7 @@ const getGeneroId = (genero) => {
 
 const getPeliculasByGenero = async(req = request, res = request) => {
   try {
+    const { page } = req.params;
     const { genero } = req.query; 
     const generoId = await getGeneroId(genero);
     console.log(generoId);
@@ -119,8 +144,10 @@ const getPeliculasByGenero = async(req = request, res = request) => {
           include_video: false,
           language: 'en-US',
           sort_by: 'popularity.desc',
+          page:page,
           with_genres:generoId,
           api_key: apiKey,
+          original_lenguage: 'en'
         },
       })
         .then( ( { status, data } ) => {
@@ -139,7 +166,6 @@ const getPeliculasByGenero = async(req = request, res = request) => {
 
 module.exports = {
     getPeliculas,
-    getEstrenos,
     getPelicula,
     getPeliculasByGenero
 };
