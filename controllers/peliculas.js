@@ -2,47 +2,6 @@ const { request, response } = require("express");
 const axios = require('axios');
 const apiKey = process.env.APIKEY; 
 
-/*
-const getPeliculas = (req = request, res = request) => {
-  const pages = [1, 2, 3];
-
-  const requests = pages.map((page) =>
-    axios.get(
-      `https://api.themoviedb.org/3/discover/movie`,
-      {
-        params: {
-          include_adult: false,
-          include_video: false,
-          language: 'en-US',
-          page,
-          sort_by: 'popularity.desc',
-          api_key: apiKey,
-        },
-      })
-  );
-
-  axios
-    .all(requests)
-    .then((responses) => {
-      const peliculas = [];
-      responses.forEach((response) => {
-        if (response.status === 200) {
-          peliculas.push(...response.data.results);
-        }
-      });
-
-
-      res.status(200).json(peliculas);
-    })
-    .catch((error) => {
-      console.error(error);
-      res.status(error.status).json({
-        error:error.response.status +" "+ error.response.statusText,
-        message:error.response.data.status_message
-      });
-    });
-};
-*/
 
 const getPeliculas = (req = request, res = request) => {
   try {
@@ -54,10 +13,34 @@ const getPeliculas = (req = request, res = request) => {
         params: {
           include_adult: false,
           include_video: false,
-          language: 'en-US',
+          language: 'es-AR',
           page: page,
           sort_by: 'popularity.desc',
           api_key: apiKey,
+        },
+      })
+        .then( ( { status, data } ) => {
+          res.status(status).json(data);
+        })
+  } catch (error) {
+    res.status(error.status).json({
+      error:error.status +" "+ error.statusText,
+      message:error.status_message
+    });
+  }
+
+}
+
+const getPeliculasRelacionadas = (req = request, res = request) => {
+  try {
+    const { id } = req.params;
+    axios.get(
+      `https://api.themoviedb.org/3/movie/${id}/recommendations`,
+      {
+        params: {
+          language: 'es-AR',
+          page: 1,
+          api_key: apiKey
         },
       })
         .then( ( { status, data } ) => {
@@ -82,6 +65,7 @@ const getPelicula = (req = request, res = request) => {
         `https://api.themoviedb.org/3/movie/${id}`,
         {
           params: {
+            language: 'es-AR',
             api_key: apiKey
           },
         })
@@ -106,7 +90,7 @@ const getGeneroId = (genero) => {
       'https://api.themoviedb.org/3/genre/movie/list',
       {
         params: {
-          language: 'es', 
+          language: 'es-AR', 
           api_key: apiKey, 
         },
       }
@@ -142,12 +126,12 @@ const getPeliculasByGenero = async(req = request, res = request) => {
         params: {
           include_adult: false,
           include_video: false,
-          language: 'en-US',
+          language: 'es-AR',
           sort_by: 'popularity.desc',
           page:page,
           with_genres:generoId,
           api_key: apiKey,
-          original_lenguage: 'en'
+          //original_lenguage: 'en'
         },
       })
         .then( ( { status, data } ) => {
@@ -163,9 +147,9 @@ const getPeliculasByGenero = async(req = request, res = request) => {
 }
 
 
-
 module.exports = {
     getPeliculas,
     getPelicula,
-    getPeliculasByGenero
+    getPeliculasByGenero,
+    getPeliculasRelacionadas
 };
