@@ -13,7 +13,7 @@ rutas hechas hasta ahora:
     te devuelve Details de la pelicula  
     `/pelicula/{id}`
 
- - Lista de peliculas relacionadas por id:
+ - Lista de peliculas relacionadas por id:  
    `/pelicula/{id}/relacionadas`
 
 - Lista de peliculas por genero:  
